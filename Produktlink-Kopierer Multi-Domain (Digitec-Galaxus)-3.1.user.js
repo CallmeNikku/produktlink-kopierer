@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Produktlink-Kopierer Multi-Domain (Digitec/Galaxus)
-// @version      3.2
+// @version      3.2.2
 // @description  Buttons zum Kopieren von Produktlinks mit optionalem Titel (Rich-Link) für Digitec & Galaxus – stabil für Produktseiten (verfügbar & nicht verfügbar). Vergleichsseiten separat umsetzbar.
 // @author       Nikku
 // @match        https://www.digitec.ch/*
@@ -139,7 +139,7 @@
     observer.observe(document.body, { childList: true, subtree: true });
 })();
 
-// Vergleichslisten-Teil (Produkttitel sauber aus aria-label)
+// Vergleichslisten-Teil (nur Links ohne Hash & Artikelnummer, Button fix)
 (function() {
   'use strict';
   if (!window.location.pathname.includes('/comparison/')) return;
@@ -159,11 +159,11 @@
     wrapper.style.zIndex = '1000';
 
     const container = document.createElement('div');
-    container.style.display = 'flex';
+    container.style.display = 'inline-flex';
     container.style.alignItems = 'center';
     container.style.marginLeft = '20px';
-    container.style.position = 'relative';
     container.style.top = '18px';
+    container.style.position = 'relative';
 
     const btn = document.createElement('button');
     btn.id = 'copy-all-links';
@@ -175,6 +175,7 @@
     btn.style.border = 'none';
     btn.style.borderRadius = '6px';
     btn.style.cursor = 'pointer';
+    btn.style.zIndex = '1001';
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -190,32 +191,32 @@
     label.appendChild(checkbox);
     label.appendChild(document.createTextNode(' Titel als Rich-Link'));
 
-    btn.onclick = (e) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      const cards = Array.from(document.querySelectorAll('a[href*="/product/"]'));
+
+      const cards = Array.from(document.querySelectorAll('a[href*="/s1/product/"]'));
       const unique = [];
       cards.forEach(link => {
-        const url = link.href.split('?')[0];
+        let url = link.href.split('?')[0].split('#')[0];
+        const isValid = /\/s1\/product\/[^/]+-\d+$/.test(url);
         let title = link.getAttribute('aria-label') || link.innerText.trim();
         if (!title) title = 'Produkt';
-        if (url && !url.includes('/explore/') && !unique.find(p => p.url === url)) {
+        if (url && url.includes('/s1/product/') && isValid && !unique.find(p => p.url === url)) {
           unique.push({ url, title });
         }
       });
 
       if (unique.length === 0) return;
 
-      let output;
-      if (checkbox.checked) {
-        output = unique.map(p => `- [${p.title}](${p.url})`).join('\n');
-      } else {
-        output = unique.map(p => `- ${p.url}`).join('\n');
-      }
+      let output = checkbox.checked
+        ? unique.map(p => `- [${p.title}](${p.url})`).join('\n')
+        : unique.map(p => `- ${p.url}`).join('\n');
 
       navigator.clipboard.writeText(output);
       btn.textContent = '✅ Kopiert!';
       setTimeout(() => btn.textContent = '📋 Alle Produktlinks', 2000);
-    };
+    });
 
     container.appendChild(btn);
     container.appendChild(label);
@@ -226,4 +227,3 @@
   observer.observe(document.body, { childList: true, subtree: true });
   window.addEventListener('load', addButton);
 })();
-
