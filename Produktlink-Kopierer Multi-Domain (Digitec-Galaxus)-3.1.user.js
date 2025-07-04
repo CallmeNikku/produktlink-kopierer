@@ -12,8 +12,8 @@
 // @match        https://www.galaxus.be/*
 // @grant        GM_setClipboard
 // @run-at       document-idle
-// @updateURL    https://raw.githubusercontent.com/DEINNUTZERNAME/produktlink-kopierer/main/produktlink-kopierer.user.js
-// @downloadURL  https://raw.githubusercontent.com/DEINNUTZERNAME/produktlink-kopierer/main/produktlink-kopierer.user.js
+// @updateURL    https://github.com/CallmeNikku/produktlink-kopierer/raw/refs/heads/main/Produktlink-Kopierer%20Multi-Domain%20(Digitec-Galaxus)-3.1.user.js
+// @downloadURL  https://github.com/CallmeNikku/produktlink-kopierer/raw/refs/heads/main/Produktlink-Kopierer%20Multi-Domain%20(Digitec-Galaxus)-3.1.user.js
 // ==/UserScript==
 
 (function () {
