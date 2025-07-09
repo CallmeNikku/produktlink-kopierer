@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Produktlink-Kopierer Multi-Domain (Digitec/Galaxus)
-// @version      3.2.2
+// @version      3.3
 // @description  Buttons zum Kopieren von Produktlinks mit optionalem Titel (Rich-Link) für Digitec & Galaxus – stabil für Produktseiten (verfügbar & nicht verfügbar). Vergleichsseiten separat umsetzbar.
 // @author       Nikku
 // @match        https://www.digitec.ch/*
@@ -139,7 +139,7 @@
     observer.observe(document.body, { childList: true, subtree: true });
 })();
 
-// Vergleichslisten-Teil (nur Links ohne Hash & Artikelnummer, Button fix)
+// Vergleichslisten-Teil (Digitec Header Fix)
 (function() {
   'use strict';
   if (!window.location.pathname.includes('/comparison/')) return;
@@ -150,7 +150,7 @@
   const addButton = () => {
     if (document.getElementById('copy-all-links')) return;
 
-    const header = document.querySelector('h1[class^="sc-"], h1[class^="ycNaCii"]');
+    const header = document.querySelector('h1[class^="sc-"], h1[class^="ycNaCii"], h1');
     if (!header || !header.parentElement) return;
 
     const wrapper = header.parentElement;
